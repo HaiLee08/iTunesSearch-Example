@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		437EC21A1FBB4B040047AE4F /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437EC2191FBB4B040047AE4F /* DetailViewModel.swift */; };
 		43CEB7721FB9FA54002DE24B /* iTunesSearch_ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CEB76E1FB9FA54002DE24B /* iTunesSearch_ExampleTests.swift */; };
 		43CEB7731FB9FA54002DE24B /* SearchResultParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CEB76F1FB9FA54002DE24B /* SearchResultParserTests.swift */; };
 		43CEB7741FB9FA54002DE24B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 43CEB7711FB9FA54002DE24B /* Info.plist */; };
@@ -50,6 +51,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		437EC2191FBB4B040047AE4F /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		43AB392C1FB86D8000559D85 /* iTunesSearch-Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iTunesSearch-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43AB39401FB86D8000559D85 /* iTunesSearch-ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iTunesSearch-ExampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		43CEB76E1FB9FA54002DE24B /* iTunesSearch_ExampleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iTunesSearch_ExampleTests.swift; sourceTree = "<group>"; };
@@ -103,6 +105,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		437EC2181FBB4AF40047AE4F /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				437EC2191FBB4B040047AE4F /* DetailViewModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		43AB39231FB86D8000559D85 = {
 			isa = PBXGroup;
 			children = (
@@ -327,6 +337,7 @@
 		43EB91911FBA661B004F4E5E /* Detail */ = {
 			isa = PBXGroup;
 			children = (
+				437EC2181FBB4AF40047AE4F /* Model */,
 				43EB91931FBA661B004F4E5E /* DetailViewController.swift */,
 			);
 			path = Detail;
@@ -470,6 +481,7 @@
 				43E8AE211FB86DF300D27A2B /* AppDelegate.swift in Sources */,
 				43E8AE4F1FB8A5A500D27A2B /* SearchResultParser.swift in Sources */,
 				43E8AE4B1FB873CD00D27A2B /* QueueManager.swift in Sources */,
+				437EC21A1FBB4B040047AE4F /* DetailViewModel.swift in Sources */,
 				43D08F721FBB0FC3008AD108 /* SearchListViewModel.swift in Sources */,
 				43E8AE481FB8731E00D27A2B /* NSObject+Name.swift in Sources */,
 				43E8AE311FB86FB500D27A2B /* SearchDataManager.swift in Sources */,

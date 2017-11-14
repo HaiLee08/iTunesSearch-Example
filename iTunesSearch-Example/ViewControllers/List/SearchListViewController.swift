@@ -41,6 +41,19 @@ class SearchListViewController: UIViewController {
         
         navigationItem.title = NSLocalizedString("Search", comment: "")
     }
+    
+    // MARK: - Segue
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "SearchResultSegue" {
+            if let detailViewController = segue.destination as? DetailViewController,
+                let cell = sender as? SearchResultTableViewCell,
+                let indexPath = tableView.indexPath(for: cell) {
+                let searchResult = searchListViewModel.searchResult(at: indexPath.row)
+                detailViewController.viewModel = searchListViewModel.detailViewModel(searchResult: searchResult)
+            }
+        }
+    }
 }
 
 extension SearchListViewController: UISearchBarDelegate {

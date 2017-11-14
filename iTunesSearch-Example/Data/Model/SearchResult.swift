@@ -13,9 +13,9 @@ struct SearchResult {
     let artistName: String
     let trackName: String
     let artworkURL: URL
-    let genre: String
     let price: Double
     let currency: String
+    let trackDetailsURL: URL
 }
 
 extension SearchResult: Equatable { }
@@ -24,7 +24,7 @@ func == (lhs: SearchResult, rhs: SearchResult) -> Bool {
     return lhs.artistName == rhs.artistName
         && lhs.trackName == rhs.trackName
         && lhs.artworkURL == rhs.artworkURL
-        && lhs.genre == rhs.genre
         && lhs.price == rhs.price
         && lhs.currency == rhs.currency
+        && lhs.trackDetailsURL == rhs.trackDetailsURL
 }

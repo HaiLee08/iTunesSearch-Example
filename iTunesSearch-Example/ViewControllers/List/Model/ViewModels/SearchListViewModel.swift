@@ -12,14 +12,15 @@ class SearchListViewModel {
     
     var searchTerms: String? {
         didSet {
-            searchResults = [SearchResultViewModel]()
+            viewModels = [SearchResultViewModel]()
+            searchResults = [SearchResult]()
             scheduleTimerForTriggeringNextSearch()
         }
     }
     
     private var timer: Timer?
     
-    private var searchResults = [SearchResultViewModel]() {
+    private var viewModels = [SearchResultViewModel]() {
         didSet {
             self.reloadTableView?()
         }
@@ -29,6 +30,8 @@ class SearchListViewModel {
     
     var updateLoadingStatus: (() -> ())?
     var reloadTableView: (() -> ())?
+    
+    private var searchResults = [SearchResult]()
     
     var isLoading: Bool = false {
         didSet {
@@ -65,7 +68,8 @@ class SearchListViewModel {
             self.isLoading = false
             switch result {
             case .success(let searchResults):
-                self.searchResults = self.searchResultViewModels(searchResults: searchResults)
+                self.searchResults = searchResults
+                self.viewModels = self.searchResultViewModels(searchResults: searchResults)
             case .failure:
                 print("failed to retrieve search results")
             }
@@ -93,10 +97,20 @@ class SearchListViewModel {
     // MARK: - Data
     
     func numberOfCells() -> Int {
-        return searchResults.count
+        return viewModels.count
     }
     
     func viewModel(at index: Int) -> SearchResultViewModel {
+        return viewModels[index]
+    }
+    
+    func searchResult(at index: Int) -> SearchResult {
         return searchResults[index]
+    }
+    
+    // MARK: - Detail
+    
+    func detailViewModel(searchResult: SearchResult) -> DetailViewModel {
+        return DetailViewModel(searchResult: searchResult)
     }
 }

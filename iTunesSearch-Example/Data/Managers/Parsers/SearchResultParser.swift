@@ -33,12 +33,13 @@ class SearchResultParser: Parser<[SearchResult]> {
             let trackName = searchResultResponse["trackName"] as? String,
             let artworkString = searchResultResponse["artworkUrl100"] as? String,
             let artworkURL = URL(string: artworkString),
-            let genre = searchResultResponse["primaryGenreName"] as? String,
+            let trackDetailsString = searchResultResponse["trackViewUrl"] as? String,
+            let trackDetailsURL = URL(string: trackDetailsString),
             let price = searchResultResponse["trackPrice"] as? Double,
             let currency = searchResultResponse["currency"] as? String else {
             return nil
         }
         
-        return SearchResult(artistName: artistName, trackName: trackName, artworkURL: artworkURL, genre: genre, price: price, currency: currency)
+        return SearchResult(artistName: artistName, trackName: trackName, artworkURL: artworkURL, price: price, currency: currency, trackDetailsURL: trackDetailsURL)
     }
 }
