@@ -14,7 +14,8 @@ class RequestFactory {
     
     func request(endPoint: String, config: RequestConfig = RequestConfig()) -> URLRequest {
         let stringURL = "\(config.APIHost)/\(endPoint)"
-        let url = URL(string: stringURL)!
+        let encodedStringURL = stringURL.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        let url = URL(string: encodedStringURL!)!
     
         return URLRequest(url: url)
     }

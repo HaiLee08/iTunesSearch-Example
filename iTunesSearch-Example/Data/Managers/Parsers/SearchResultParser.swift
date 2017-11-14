@@ -31,14 +31,14 @@ class SearchResultParser: Parser<[SearchResult]> {
     private func parseSearchResult(_ searchResultResponse: [String: Any]) -> SearchResult? {
         guard let artistName = searchResultResponse["artistName"] as? String,
             let trackName = searchResultResponse["trackName"] as? String,
-            let previewArtworkString = searchResultResponse["artworkUrl30"] as? String,
-            let previewArtworkURL = URL(string: previewArtworkString),
-            let detailArtworkString = searchResultResponse["artworkUrl100"] as? String,
-            let detailArtworkURL = URL(string: detailArtworkString),
-            let genre = searchResultResponse["primaryGenreName"] as? String else {
+            let artworkString = searchResultResponse["artworkUrl100"] as? String,
+            let artworkURL = URL(string: artworkString),
+            let genre = searchResultResponse["primaryGenreName"] as? String,
+            let price = searchResultResponse["trackPrice"] as? Double,
+            let currency = searchResultResponse["currency"] as? String else {
             return nil
         }
         
-        return SearchResult(artistName: artistName, trackName: trackName, previewArtworkURL: previewArtworkURL, detailArtworkURL: detailArtworkURL, genre: genre)
+        return SearchResult(artistName: artistName, trackName: trackName, artworkURL: artworkURL, genre: genre, price: price, currency: currency)
     }
 }

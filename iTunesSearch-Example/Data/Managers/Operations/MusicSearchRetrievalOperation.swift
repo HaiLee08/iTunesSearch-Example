@@ -20,7 +20,7 @@ class MusicSearchRetrievalOperation: CoalescibleOperation<[SearchResult]>{
         self.session = session
         self.urlRequestFactory = urlRequestFactory
         self.searchTerms = searchTerms
-        super.init(identifier: MusicSearchRetrievalOperation.className)
+        super.init(identifier: searchTerms)
     }
     
     // MARK: - Start

@@ -25,10 +25,10 @@ class SearchDataManager {
     
     // MARK: - Music
     
-    func retrieveMusicSearchResults(for searchTerms: String, completion: @escaping ((_ result: DataRequestResult<[SearchResult]>) -> ())) {
+    func retrieveMusicSearchResults(for searchTerms: String, completion: @escaping ((_ searchTerms: String, _ result: DataRequestResult<[SearchResult]>) -> ())) {
         let operation = MusicSearchRetrievalOperation(searchTerms: searchTerms)
         operation.completion = { (result: DataRequestResult) in
-            completion(result)
+            completion(searchTerms, result)
         }
         
         queueManager.enqueue(operation)
