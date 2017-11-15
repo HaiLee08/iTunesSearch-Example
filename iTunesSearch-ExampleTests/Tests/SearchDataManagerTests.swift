@@ -41,7 +41,7 @@ class SearchDataManagerTests: XCTestCase {
     
     func test_operationEnqueued() {
         let searchTerms = "swift"
-        searchDataManager.retrieveMusicSearchResults(for: searchTerms) { _ in }
+        searchDataManager.retrieveMusicSearchResults(for: searchTerms) { (_, _) in }
         
         XCTAssertTrue(queueManagerSpy.operationEnqueued is MusicSearchRetrievalOperation)
         XCTAssertEqual((queueManagerSpy.operationEnqueued as! MusicSearchRetrievalOperation).searchTerms, searchTerms)

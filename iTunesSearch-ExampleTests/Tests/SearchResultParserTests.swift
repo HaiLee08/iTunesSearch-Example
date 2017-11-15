@@ -110,9 +110,10 @@ class SearchResultParserTests: XCTestCase {
         
         XCTAssertEqual(secondSearchResult.artistName, "Taylor Swift")
         XCTAssertEqual(secondSearchResult.trackName, "Look What You Made Me Do")
-        XCTAssertEqual(secondSearchResult.previewArtworkURL, URL(string: "http://is2.mzstatic.com/image/thumb/Music128/v4/bc/84/77/bc847733-8fcd-1040-8ddb-4271601f4151/source/30x30bb.jpg"))
-        XCTAssertEqual(secondSearchResult.detailArtworkURL, URL(string: "http://is2.mzstatic.com/image/thumb/Music128/v4/bc/84/77/bc847733-8fcd-1040-8ddb-4271601f4151/source/100x100bb.jpg"))
-        XCTAssertEqual(secondSearchResult.genre, "Pop")
+        XCTAssertEqual(secondSearchResult.artworkURL, URL(string: "http://is2.mzstatic.com/image/thumb/Music128/v4/bc/84/77/bc847733-8fcd-1040-8ddb-4271601f4151/source/100x100bb.jpg"))
+        XCTAssertEqual(secondSearchResult.trackDetailsURL, URL(string: "https://itunes.apple.com/us/album/look-what-you-made-me-do/1274999981?i=1274999999&uo=4"))
+        XCTAssertEqual(secondSearchResult.price, 1.29)
+        XCTAssertEqual(secondSearchResult.currency, "USD")
     }
     
     //Additional tests covering unhappy paths

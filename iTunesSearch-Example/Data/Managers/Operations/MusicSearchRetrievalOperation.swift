@@ -38,7 +38,6 @@ class MusicSearchRetrievalOperation: CoalescibleOperation<[SearchResult]>{
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data!, options: .mutableContainers) as! [String: Any]
-                print(json)
                 
                 let parser = SearchResultParser()
                 let searchResults = parser.parseResponse(json)

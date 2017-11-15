@@ -8,75 +8,77 @@
 
 import Foundation
 
+protocol SearchListViewModelDelegate {
+    func didStartSearching()
+    func didStopSearching(viewModels: [SearchResultViewModel])
+}
+
+protocol SearchListViewModelData: class {
+    func retrieveMusicSearchResults(for searchTerms: String, completion: @escaping ((_ searchTerms: String, _ result: DataRequestResult<[SearchResult]>) -> ()))
+}
+
+extension SearchDataManager: SearchListViewModelData { }
+
 class SearchListViewModel {
+    var currentSearchTerms: String?
+    var timer: Timer?
+
+    let searchDataManager: SearchListViewModelData
     
-    var searchTerms: String? {
-        didSet {
-            viewModels = [SearchResultViewModel]()
-            searchResults = [SearchResult]()
-            scheduleTimerForTriggeringNextSearch()
-        }
-    }
+    var delegate: SearchListViewModelDelegate?
     
-    private var timer: Timer?
-    
-    private var viewModels = [SearchResultViewModel]() {
-        didSet {
-            self.reloadTableView?()
-        }
-    }
-    
-    let searchDataManager: SearchDataManager
-    
-    var updateLoadingStatus: (() -> ())?
-    var reloadTableView: (() -> ())?
-    
-    private var searchResults = [SearchResult]()
-    
-    var isLoading: Bool = false {
-        didSet {
-            self.updateLoadingStatus?()
-        }
-    }
+    var searchResults = [SearchResult]()
+    var viewModels = [SearchResultViewModel]()
     
     // MARK: - Init
     
-    init(searchDataManager: SearchDataManager = SearchDataManager()) {
+    init(searchDataManager: SearchListViewModelData = SearchDataManager()) {
         self.searchDataManager = searchDataManager
     }
     
-    // MARK: - Timer
+    // MARK: - Search
     
-    func scheduleTimerForTriggeringNextSearch() {
+    func search(for searchTerms: String) {
+        resetCurrentSearch()
+        currentSearchTerms = searchTerms
+        delegate?.didStartSearching()
         timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: false, block: { timer in
-            if !(self.searchTerms?.isEmpty ?? true) {
-                self.retrieveResultsFor(searchTerms: self.searchTerms!)
-            }
-        })
+        if !searchTerms.isEmpty {
+            timer = Timer.scheduledTimer(withTimeInterval: 0.8, repeats: false, block: { timer in
+                self.retrieveResults(for: searchTerms)
+            })
+        } else {
+            delegate?.didStopSearching(viewModels: viewModels)
+        }
     }
     
     // MARK: - Retrieval
     
-    func retrieveResultsFor(searchTerms: String) {
-        isLoading = true
+    func resetCurrentSearch() {
+        currentSearchTerms = nil
+        searchResults.removeAll()
+        viewModels.removeAll()
+    }
+    
+    private func retrieveResults(for searchTerms: String) {
         searchDataManager.retrieveMusicSearchResults(for: searchTerms) { (searchTerms, result) in
-            guard searchTerms == self.searchTerms else {
+            guard searchTerms == self.currentSearchTerms else {
                 return
             }
             
-            self.isLoading = false
             switch result {
             case .success(let searchResults):
                 self.searchResults = searchResults
-                self.viewModels = self.searchResultViewModels(searchResults: searchResults)
+                self.viewModels = self.buildSearchResultViewModels(searchResults: searchResults)
+                self.delegate?.didStopSearching(viewModels: self.viewModels)
             case .failure:
-                print("failed to retrieve search results")
+                //handle error state
+                break
             }
         }
     }
     
-    func searchResultViewModels(searchResults: [SearchResult]) -> [SearchResultViewModel] {
+    private func buildSearchResultViewModels(searchResults: [SearchResult]) -> [SearchResultViewModel] {
         
         var viewModels = [SearchResultViewModel]()
         
@@ -92,25 +94,5 @@ class SearchListViewModel {
         }
         
         return viewModels
-    }
-    
-    // MARK: - Data
-    
-    func numberOfCells() -> Int {
-        return viewModels.count
-    }
-    
-    func viewModel(at index: Int) -> SearchResultViewModel {
-        return viewModels[index]
-    }
-    
-    func searchResult(at index: Int) -> SearchResult {
-        return searchResults[index]
-    }
-    
-    // MARK: - Detail
-    
-    func detailViewModel(searchResult: SearchResult) -> DetailViewModel {
-        return DetailViewModel(searchResult: searchResult)
     }
 }

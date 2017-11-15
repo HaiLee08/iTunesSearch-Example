@@ -16,20 +16,7 @@ class SearchListViewController: UIViewController {
 
     lazy var searchListViewModel: SearchListViewModel = {
        let searchListViewModel = SearchListViewModel()
-        searchListViewModel.updateLoadingStatus = {
-            let isLoading = searchListViewModel.isLoading
-            if isLoading {
-                self.loadingActivityIndicator.startAnimating()
-                self.tableView.alpha = 0.0
-            }else {
-                self.loadingActivityIndicator.stopAnimating()
-                self.tableView.alpha = 1.0
-            }
-        }
-        
-        searchListViewModel.reloadTableView = {
-            self.tableView.reloadData()
-        }
+       searchListViewModel.delegate = self
         
         return searchListViewModel
     }()
@@ -40,6 +27,10 @@ class SearchListViewController: UIViewController {
         super.viewDidLoad()
         
         navigationItem.title = NSLocalizedString("Search", comment: "")
+        
+        let center = NotificationCenter.default
+        center.addObserver(self, selector: #selector(keyboardChange(_:)), name: .UIKeyboardWillShow, object: nil)
+        center.addObserver(self, selector: #selector(keyboardChange(_:)), name: .UIKeyboardWillHide, object: nil)
     }
     
     // MARK: - Segue
@@ -49,9 +40,26 @@ class SearchListViewController: UIViewController {
             if let detailViewController = segue.destination as? DetailViewController,
                 let cell = sender as? SearchResultTableViewCell,
                 let indexPath = tableView.indexPath(for: cell) {
-                let searchResult = searchListViewModel.searchResult(at: indexPath.row)
-                detailViewController.viewModel = searchListViewModel.detailViewModel(searchResult: searchResult)
+                let searchResult = searchListViewModel.searchResults[indexPath.row]
+                detailViewController.viewModel = DetailViewModel(searchResult: searchResult)
             }
+        }
+    }
+    
+    // MARK: - Keyboard
+    
+    @objc func keyboardChange(_ notification: Notification) {
+        guard let userInfo = notification.userInfo else {
+            return
+        }
+        
+        let keyboardScreenEndFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
+        
+        if notification.name == Notification.Name.UIKeyboardWillHide {
+            tableView.contentInset = UIEdgeInsets.zero
+        } else {
+            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height, right: 0)
         }
     }
 }
@@ -59,27 +67,53 @@ class SearchListViewController: UIViewController {
 extension SearchListViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        searchListViewModel.searchTerms = searchBar.text
+        searchListViewModel.search(for: searchBar.text ?? "")
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        view.endEditing(true)
     }
 }
 
-extension SearchListViewController: UITableViewDelegate { }
+extension SearchListViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        view.endEditing(true)
+    }
+}
 
 extension SearchListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchListViewModel.numberOfCells()
+        return searchListViewModel.viewModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SearchResultTableViewCell.className, for: indexPath) as? SearchResultTableViewCell else {
-            fatalError() // fail fast
+            fatalError("unknown cell type being used") // fail fast
         }
-        let viewModel = searchListViewModel.viewModel(at: indexPath.row)
-    
+        
+        let viewModel = searchListViewModel.viewModels[indexPath.row]
         cell.viewModel = viewModel
         
         return cell
+    }
+}
+
+extension SearchListViewController: SearchListViewModelDelegate {
+    
+    func didStartSearching() {
+        self.tableView.reloadData()
+        loadingActivityIndicator.startAnimating()
+    }
+    
+    func didStopSearching(viewModels: [SearchResultViewModel]) {
+        loadingActivityIndicator.stopAnimating()
+        tableView.reloadData()
+        
+        //Handle no results
     }
 }
 
