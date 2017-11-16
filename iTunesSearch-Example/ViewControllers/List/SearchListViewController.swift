@@ -113,7 +113,17 @@ extension SearchListViewController: SearchListViewModelDelegate {
         loadingActivityIndicator.stopAnimating()
         tableView.reloadData()
         
-        //Handle no results
+        if viewModels.count == 0 {
+            let alertController = UIAlertController(title: NSLocalizedString("No results", comment: ""), message: NSLocalizedString("Sadly, your search didn't find any matches", comment: ""), preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .cancel, handler: nil))
+            
+            present(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    func didClearSearch() {
+        loadingActivityIndicator.stopAnimating()
+        tableView.reloadData()
     }
 }
 

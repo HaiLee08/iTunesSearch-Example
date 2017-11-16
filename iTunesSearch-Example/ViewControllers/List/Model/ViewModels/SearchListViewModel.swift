@@ -11,6 +11,7 @@ import Foundation
 protocol SearchListViewModelDelegate {
     func didStartSearching()
     func didStopSearching(viewModels: [SearchResultViewModel])
+    func didClearSearch()
 }
 
 protocol SearchListViewModelData: class {
@@ -48,7 +49,7 @@ class SearchListViewModel {
                 self.retrieveResults(for: searchTerms)
             })
         } else {
-            delegate?.didStopSearching(viewModels: viewModels)
+            delegate?.didClearSearch()
         }
     }
     
@@ -72,7 +73,7 @@ class SearchListViewModel {
                 self.viewModels = self.buildSearchResultViewModels(searchResults: searchResults)
                 self.delegate?.didStopSearching(viewModels: self.viewModels)
             case .failure:
-                //handle error state
+                self.delegate?.didStopSearching(viewModels: self.viewModels)
                 break
             }
         }

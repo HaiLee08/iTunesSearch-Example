@@ -33,7 +33,12 @@ extension DetailViewController: WKNavigationDelegate {
         loadingActivityIndicator.stopAnimating()
     }
     
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        //handle error state
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        loadingActivityIndicator.stopAnimating()
+        
+        let alertController = UIAlertController(title: NSLocalizedString("Unable to open", comment: ""), message: NSLocalizedString("Sadly, an error occurred", comment: ""), preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .cancel, handler: nil))
+        
+        present(alertController, animated: true, completion: nil)
     }
 }
